@@ -1,30 +1,56 @@
-#!/usr/bin/env bash
-set -euo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${SCRIPT_DIR}/env.sh"
+#!/bin/bash
+# Download models to shared warehouse (FIXED VERSION)
 
-MODEL_REPO="${1:-Qwen/Qwen2.5-1.5B-Instruct-GGUF}"
-MODEL_FILE="${2:-Qwen2.5-1.5B-Instruct-Q4_K_M.gguf}"
+source "$(dirname "$0")/env.sh"
 
-if [[ -d "${REPO}" && -f "${REPO}/download-model.py" ]]; then
-  echo "[download] via TGW downloader @ ${REPO}"
-  cd "${REPO}"
-  python3 download-model.py "${MODEL_REPO}" --text-only || true
-  python3 download-model.py "${MODEL_REPO}" --filename "${MODEL_FILE}" || true
-else
-  echo "[fallback] huggingface_hub → ${TGW_MODELS_DIR}"
-  python3 - <<'PY'
-import os, sys
-from huggingface_hub import hf_hub_download
-repo, fn = sys.argv[1], sys.argv[2]
-target = os.environ["TGW_MODELS_DIR"]
-os.makedirs(target, exist_ok=True)
-p = hf_hub_download(repo_id=repo, filename=fn,
-                    local_dir=target, local_dir_use_symlinks=False,
-                    cache_dir=os.environ.get("HF_HOME"))
-print("[ok] downloaded:", p)
-PY
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <model_repo> [specific_file]"
+    echo "Examples:"
+    echo "  $0 unsloth/Qwen2.5-VL-7B-Instruct-GGUF"
+    echo "  $0 unsloth/Qwen2.5-VL-7B-Instruct-GGUF Qwen2.5-VL-7B-Instruct-Q5_K_M.gguf"
+    exit 1
 fi
 
-echo "[verify] ${TGW_MODELS_DIR}/${MODEL_FILE}"
-ls -lh "${TGW_MODELS_DIR}" | grep -E "${MODEL_FILE}" || true
+MODEL_REPO="$1"
+SPECIFIC_FILE="$2"
+
+echo "⬇️  Downloading model to warehouse..."
+echo "   Repository: $MODEL_REPO"
+echo "   Target: $TGW_MODELS_DIR"
+
+# Ensure target directory exists
+mkdir -p "$TGW_MODELS_DIR"
+
+cd "$TGW_REPO"
+
+# Activate conda environment
+if [ "$CONDA_DEFAULT_ENV" != "env-ai" ]; then
+    echo "🔄 Activating env-ai..."
+    source ~/miniconda3/etc/profile.d/conda.sh
+    conda activate env-ai
+fi
+
+# Download with optional specific file
+if [ -n "$SPECIFIC_FILE" ]; then
+    echo "   Specific file: $SPECIFIC_FILE"
+    python download-model.py "$MODEL_REPO" \
+        --output "$TGW_MODELS_DIR" \
+        --specific-file "$SPECIFIC_FILE"
+else
+    echo "   Downloading all files..."
+    python download-model.py "$MODEL_REPO" \
+        --output "$TGW_MODELS_DIR"
+fi
+
+echo "✅ Download completed. Checking files..."
+
+# Manual verification instead of calling external script
+echo ""
+echo "📦 Downloaded files:"
+if [ -d "$TGW_MODELS_DIR" ]; then
+    find "$TGW_MODELS_DIR" -name "*.gguf" -o -name "*.bin" -o -name "*.safetensors" | tail -5
+    echo ""
+    echo "📊 Warehouse size: $(du -sh "$TGW_MODELS_DIR" | cut -f1)"
+else
+    echo "❌ Target directory not found: $TGW_MODELS_DIR"
+fi

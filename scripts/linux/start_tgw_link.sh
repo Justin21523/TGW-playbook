@@ -1,15 +1,32 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
+# Start TGW with symlinked models directory (Method B)
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$(dirname "$0")/env.sh"
 
-# shellcheck source=env.sh
-source "${SCRIPT_DIR}/env.sh"
+echo "🚀 Starting TGW with symlink method..."
 
-# 先建立符號連結
-"${SCRIPT_DIR}/link_models.sh"
+# Create symlink first
+"$(dirname "$0")/link_models.sh"
 
-cd "${REPO}"
-exec python3 server.py \
-  --api --api-port 5000 \
-  --listen --listen-host 0.0.0.0 --port 7860
+echo "   UI: http://localhost:7860"
+echo "   API: http://localhost:5000"
+
+cd "$TGW_REPO"
+
+# Activate conda environment
+if [ ! -z "$CONDA_DEFAULT_ENV" ] && [ "$CONDA_DEFAULT_ENV" != "env-ai" ]; then
+    echo "🔄 Switching to env-ai..."
+    conda deactivate
+fi
+
+if [ "$CONDA_DEFAULT_ENV" != "env-ai" ]; then
+    conda activate env-ai
+fi
+
+# Start TGW normally (models already linked)
+python server.py \
+    --api \
+    --listen \
+    --verbose
+
+echo "🛑 TGW stopped"

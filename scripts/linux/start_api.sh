@@ -1,14 +1,27 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
+# Start TGW API only (no web UI)
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$(dirname "$0")/env.sh"
 
-# shellcheck source=env.sh
-source "${SCRIPT_DIR}/env.sh"
+API_PORT=${1:-5000}
 
-cd "${REPO}"
-# 如需 basic auth：加 --api-key YOUR_KEY
-exec python3 server.py --nowebui \
-  --model-dir "${TGW_MODELS_DIR}" \
-  --api --api-port 5000 \
-  --listen --listen-host 0.0.0.0
+echo "🔌 Starting TGW API-only mode..."
+echo "   API endpoint: http://localhost:$API_PORT"
+echo "   Model directory: $TGW_MODELS_DIR"
+
+cd "$TGW_REPO"
+
+# Activate conda environment
+if [ "$CONDA_DEFAULT_ENV" != "env-ai" ]; then
+    conda activate env-ai
+fi
+
+python server.py \
+    --model-dir "$TGW_MODELS_DIR" \
+    --nowebui \
+    --api \
+    --listen \
+    --api-port "$API_PORT" \
+    --verbose
+
+echo "🛑 TGW API stopped"

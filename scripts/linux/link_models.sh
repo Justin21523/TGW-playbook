@@ -1,18 +1,35 @@
-#!/usr/bin/env bash
-set -euo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+#!/bin/bash
+# Create symlink: text-generation-webui/models -> shared warehouse
 
-# shellcheck source=env.sh
-source "${SCRIPT_DIR}/env.sh"
+source "$(dirname "$0")/env.sh"
 
-# 把 <repo>/text-generation-webui/models -> TGW_MODELS_DIR
-mkdir -p "${REPO}"
-cd "${REPO}"
+echo "🔗 Linking TGW models directory to warehouse"
 
-# 確保 TGW 子目錄存在
-mkdir -p "${REPO}/user_data"  # TGW 會用到
-rm -rf "${REPO}/models" 2>/dev/null || true
-ln -sfn "${TGW_MODELS_DIR}" "${REPO}/models"
+if [ ! -d "$TGW_REPO" ]; then
+    echo "❌ TGW repository not found: $TGW_REPO"
+    exit 1
+fi
 
-echo "[link] ${REPO}/models -> ${TGW_MODELS_DIR}"
-ls -al "${REPO}/models"
+cd "$TGW_REPO"
+
+# Remove existing models directory/link
+if [ -L "models" ]; then
+    echo "  Removing existing symlink..."
+    rm "models"
+elif [ -d "models" ]; then
+    echo "  Backing up existing models directory..."
+    mv "models" "models.backup.$(date +%Y%m%d_%H%M%S)"
+fi
+
+# Create symlink
+ln -sf "$TGW_MODELS_DIR" "models"
+echo "✅ Symlink created: models -> $TGW_MODELS_DIR"
+
+# Verify
+if [ -L "models" ] && [ -d "models" ]; then
+    echo "✅ Symlink verification passed"
+    ls -la models/
+else
+    echo "❌ Symlink verification failed"
+    exit 1
+fi
