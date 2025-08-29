@@ -1,0 +1,88 @@
+﻿# TGW Settings Template for Shared Warehouse Configuration
+# Copy this file to settings.yaml and customize as needed
+
+# =============================================================================
+# CORE PATHS & MODEL CONFIGURATION
+# =============================================================================
+
+# Default model to load on startup (set after downloading your first model)
+# model: "Qwen2.5-7B-Instruct-Q4_K_M.gguf"
+
+# Default loader for GGUF models
+loader: "llama.cpp"
+
+# =============================================================================
+# SERVER & API CONFIGURATION
+# =============================================================================
+
+# Enable OpenAI-compatible API
+api: true
+
+# Listen on all interfaces (for network access)
+listen: true
+
+# API port (default: 5000)
+api_port: 5000
+
+# Web UI port (default: 7860)
+listen_port: 7860
+
+# =============================================================================
+# MODEL LOADING PARAMETERS
+# =============================================================================
+
+# llama.cpp specific settings (for GGUF models)
+n_gpu_layers: 0        # Set to -1 to offload all layers to GPU, 0 for CPU only
+n_ctx: 4096           # Context length (adjust based on model and VRAM)
+n_batch: 512          # Batch size for prompt processing
+threads: 0            # CPU threads (0 = auto-detect physical cores)
+threads_batch: 0      # Batch processing threads (0 = auto-detect all cores)
+
+# =============================================================================
+# GENERATION DEFAULTS
+# =============================================================================
+
+# Default generation parameters
+preset: "simple-1"           # Default preset
+max_new_tokens: 512          # Maximum tokens to generate
+temperature: 0.7             # Randomness (0.1 = focused, 1.5 = creative)
+top_p: 0.9                  # Nucleus sampling
+top_k: 40                   # Top-k sampling
+repetition_penalty: 1.1      # Penalty for repetition
+do_sample: true             # Enable sampling
+
+# =============================================================================
+# CHAT & CHARACTER SETTINGS
+# =============================================================================
+
+# Default chat mode (chat, chat-instruct, instruct)
+mode: "chat-instruct"
+
+# Your display name in chat
+your_name: "User"
+
+# Context length for chat history truncation
+truncation_length: 2048
+
+# =============================================================================
+# UI & EXTENSION CONFIGURATION
+# =============================================================================
+
+# UI theme and behavior
+chat_style: "cai-chat"
+show_controls: true
+activate_text_streaming: true
+
+# Auto-load model on startup
+autoload_model: false
+
+# =============================================================================
+# CHINESE LANGUAGE OPTIMIZATION
+# =============================================================================
+
+# Chinese generation parameters (more conservative for better grammar)
+# temperature: 0.6            # Lower temperature for more consistent Chinese
+# top_p: 0.8                 # Slightly lower top_p
+# repetition_penalty: 1.05    # Light repetition penalty
+
+# Last updated: 2024-01-XX
