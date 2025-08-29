@@ -1,0 +1,252 @@
+# TGW Settings Template for Shared Warehouse Configuration
+# Copy this file to settings.yaml and customize as needed
+# Documentation: https://github.com/oobabooga/text-generation-webui/wiki
+
+# =============================================================================
+# CORE PATHS & MODEL CONFIGURATION
+# =============================================================================
+
+# Model directory - points to shared warehouse (uncomment if using settings file instead of --model-dir)
+# model_dir: "C:\\AI_LLM_projects\\ai_warehouse\\cache\\models\\llm"
+
+# Default model to load on startup (set after downloading your first model)
+# model: "Qwen2.5-7B-Instruct-Q4_K_M.gguf"
+
+# Default loader for GGUF models
+loader: "llama.cpp"
+
+# =============================================================================
+# SERVER & API CONFIGURATION
+# =============================================================================
+
+# Enable OpenAI-compatible API
+api: true
+
+# Listen on all interfaces (for network access)
+listen: true
+
+# API port (default: 5000)
+api_port: 5000
+
+# Web UI port (default: 7860)
+listen_port: 7860
+
+# API authentication (uncomment to enable)
+# api_key: "your-secret-api-key-here"
+
+# Enable public access via Cloudflare tunnel (security risk - use carefully)
+# public_api: false
+# share: false
+
+# =============================================================================
+# MODEL LOADING PARAMETERS
+# =============================================================================
+
+# llama.cpp specific settings (for GGUF models)
+n_gpu_layers: 0 # Set to -1 to offload all layers to GPU, 0 for CPU only
+n_ctx: 4096 # Context length (adjust based on model and VRAM)
+n_batch: 512 # Batch size for prompt processing
+threads: 0 # CPU threads (0 = auto-detect physical cores)
+threads_batch: 0 # Batch processing threads (0 = auto-detect all cores)
+
+# GPU memory split for multi-GPU setups (uncomment if using multiple GPUs)
+# tensor_split: "30,70"  # Percentage split for 2 GPUs
+
+# Advanced llama.cpp options
+# rope_freq_base: 10000     # RoPE frequency base (model-specific)
+# compress_pos_emb: 1       # Position embedding compression
+# no_mul_mat_q: false       # Disable mul_mat_q kernel
+# no_mmap: false            # Load entirely into RAM
+# mlock: false              # Force keep in RAM
+# numa: false               # Enable NUMA support
+
+# =============================================================================
+# GENERATION DEFAULTS
+# =============================================================================
+
+# Default generation parameters (can be overridden in UI)
+preset: "simple-1" # Default preset (Divine Intellect, Big O, simple-1, etc.)
+max_new_tokens: 512 # Maximum tokens to generate
+temperature: 0.7 # Randomness (0.1 = focused, 1.5 = creative)
+top_p: 0.9 # Nucleus sampling
+top_k: 40 # Top-k sampling
+repetition_penalty: 1.1 # Penalty for repetition
+do_sample: true # Enable sampling (false = greedy)
+
+# Advanced sampling
+# min_p: 0.0                 # Minimum probability threshold
+# typical_p: 1.0             # Typical sampling
+# tfs: 1.0                   # Tail free sampling
+# top_a: 0.0                 # Top-a sampling
+# mirostat_mode: 0           # Mirostat sampling (0=disabled, 1=v1, 2=v2)
+# mirostat_tau: 8.0          # Mirostat target perplexity
+# mirostat_eta: 0.1          # Mirostat learning rate
+# dynamic_temperature: false # Dynamic temperature
+# smoothing_factor: 0.0      # Quadratic sampling
+
+# =============================================================================
+# CHAT & CHARACTER SETTINGS
+# =============================================================================
+
+# Default chat mode (chat, chat-instruct, instruct)
+mode: "chat-instruct"
+
+# Default character (set after creating characters)
+# character: "Assistant"
+
+# Default instruction template (auto-detected for most models)
+# instruction_template: "Qwen-Chat"
+
+# Your display name in chat
+your_name: "User"
+
+# Default character greeting
+# greeting: "Hello! How can I assist you today?"
+
+# Context length for chat history truncation
+truncation_length: 2048
+
+# =============================================================================
+# UI & EXTENSION CONFIGURATION
+# =============================================================================
+
+# UI theme and behavior
+chat_style: "cai-chat" # Chat interface style
+show_controls: true # Show generation controls
+activate_text_streaming: true # Stream text generation
+
+# Auto-load model on startup
+autoload_model: false # Set to true after configuring default model
+
+# Enable extensions (uncomment as needed)
+# extensions:
+#   - "openai"               # OpenAI API compatibility (usually auto-enabled with --api)
+#   - "gallery"              # Character gallery
+#   - "send_pictures"        # Image upload support
+#   - "whisper_stt"          # Speech-to-text
+#   - "silero_tts"          # Text-to-speech
+#   - "google_translate"     # Auto-translation
+#   - "superbooga"          # RAG/document search
+
+# =============================================================================
+# PERFORMANCE & MEMORY SETTINGS
+# =============================================================================
+
+# Memory and compute optimization
+auto_devices: false # Auto-detect GPU memory allocation
+load_in_8bit: false # Use 8-bit quantization (Transformers loader)
+load_in_4bit: false # Use 4-bit quantization (Transformers loader)
+bf16: false # Use bfloat16 precision
+cpu: false # Force CPU-only inference
+
+# Disk and network settings
+disk: false # Enable disk offloading
+trust_remote_code: false # Allow custom model code (security risk)
+
+# =============================================================================
+# TRAINING SETTINGS (for LoRA training)
+# =============================================================================
+
+# LoRA training defaults (uncomment when needed)
+# lora_rank: 32               # LoRA rank (higher = more capacity)
+# lora_alpha: 64              # LoRA alpha (usually 2x rank)
+# lora_dropout: 0.05          # LoRA dropout rate
+# learning_rate: 3e-4         # Training learning rate
+# train_batch_size: 1         # Training batch size
+# micro_batch_size: 1         # Micro batch size
+# num_epochs: 1               # Number of training epochs
+# cutoff_len: 256            # Training sequence length
+# save_every_n_steps: 100    # Save checkpoint frequency
+
+# =============================================================================
+# CHINESE LANGUAGE OPTIMIZATION
+# =============================================================================
+
+# Chinese-specific model settings (uncomment for Chinese models)
+# These settings work well for Chinese language models like Qwen, ChatGLM, etc.
+
+# Chinese tokenization (usually handled automatically)
+# skip_special_tokens: false
+
+# Chinese generation parameters (more conservative for better grammar)
+# temperature: 0.6            # Lower temperature for more consistent Chinese
+# top_p: 0.8                 # Slightly lower top_p
+# repetition_penalty: 1.05    # Light repetition penalty
+
+# =============================================================================
+# SECURITY & PRIVACY SETTINGS
+# =============================================================================
+
+# Privacy settings
+no_stream: false # Disable streaming (better for high-latency networks)
+no_upload: false # Disable file uploads
+
+# Logging (useful for debugging)
+# verbose: true              # Enable verbose logging
+# log_requests: false        # Log API requests (privacy concern)
+
+# Custom stopping strings (model-specific)
+# custom_stopping_strings: ["</s>", "<|end|>", "<|endoftext|>"]
+
+# =============================================================================
+# EXTENSION-SPECIFIC SETTINGS
+# =============================================================================
+
+# OpenAI extension settings (when using --api)
+openai-embedding_device: "cpu" # Device for embeddings
+openai-embedding_model: "sentence-transformers/all-mpnet-base-v2" # Embedding model
+# openai-sd_webui_url: "http://127.0.0.1:7861"             # Stable Diffusion WebUI URL
+
+# Google Translate settings
+# google_translate-language: "zh-cn"                        # Target language
+
+# Whisper STT settings
+# whisper_stt-language: "zh"                               # Speech recognition language
+
+# Silero TTS settings
+# silero_tts-language: "zh"                                # Text-to-speech language
+# silero_tts-speaker: "aiqi"                               # Chinese TTS speaker
+
+# =============================================================================
+# DEVELOPMENT & DEBUGGING
+# =============================================================================
+
+# Development settings (uncomment for debugging)
+# debug: true                # Enable debug mode
+# gradio_debug: false        # Gradio debug mode
+# ssl_keyfile: ""           # SSL certificate key file
+# ssl_certfile: ""          # SSL certificate file
+
+# Model caching
+# cache_capacity: 0          # Model cache size (0 = unlimited)
+
+# =============================================================================
+# NOTES & RECOMMENDATIONS
+# =============================================================================
+
+# PERFORMANCE TIPS:
+# 1. For GGUF models: Increase n_gpu_layers to offload more layers to GPU
+# 2. Adjust n_ctx based on your use case (higher = more memory usage)
+# 3. Use Q4_K_M or Q5_K_M quantization for best balance of size/quality
+# 4. Set threads to your CPU core count for optimal CPU performance
+
+# CHINESE MODELS:
+# 1. Qwen2.5-Instruct series: Excellent Chinese understanding
+# 2. ChatGLM3/4: Good Chinese chat capabilities
+# 3. Baichuan2: Strong Chinese knowledge base
+# 4. Consider using chat-instruct mode for better Chinese conversation
+
+# SECURITY CONSIDERATIONS:
+# 1. Don't expose --listen publicly without authentication
+# 2. Use --api-key for API access control
+# 3. Be cautious with trust_remote_code for unknown models
+# 4. Consider using --ssl-* for encrypted connections
+
+# COMMON PRESETS FOR CHINESE:
+# - "simple-1": Good for factual questions
+# - "Midnight Enigma": Better for creative writing
+# - "Big O": Balanced approach
+# - Create custom presets in configs/presets/ directory
+
+# Last updated: 2024-01-XX
+# Compatible with: text-generation-webui latest
