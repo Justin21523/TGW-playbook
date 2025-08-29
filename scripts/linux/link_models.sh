@@ -2,7 +2,7 @@
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# shellcheck source=00_env.sh
+# shellcheck source=env.sh
 source "${SCRIPT_DIR}/env.sh"
 
 # 把 <repo>/text-generation-webui/models -> TGW_MODELS_DIR
