@@ -13,8 +13,9 @@ import json
 from datetime import datetime
 
 # 設定中文字體
-plt.rcParams['font.sans-serif'] = ['Arial Unicode MS', 'DejaVu Sans', 'SimHei']
-plt.rcParams['axes.unicode_minus'] = False
+plt.rcParams["font.sans-serif"] = ["Arial Unicode MS", "DejaVu Sans", "SimHei"]
+plt.rcParams["axes.unicode_minus"] = False
+
 
 class VisualizationEngine:
     """視覺化引擎"""
@@ -23,12 +24,12 @@ class VisualizationEngine:
         self.style = style
         self.figsize = figsize
         self.color_palette = {
-            'primary': '#3498db',
-            'success': '#2ecc71',
-            'warning': '#f39c12',
-            'danger': '#e74c3c',
-            'info': '#9b59b6',
-            'secondary': '#95a5a6'
+            "primary": "#3498db",
+            "success": "#2ecc71",
+            "warning": "#f39c12",
+            "danger": "#e74c3c",
+            "info": "#9b59b6",
+            "secondary": "#95a5a6",
         }
 
     def create_quality_dashboard(self, results: Dict[str, Any], save_path: str = None):
@@ -40,7 +41,7 @@ class VisualizationEngine:
 
         plt.style.use(self.style)
         fig, axes = plt.subplots(2, 3, figsize=(18, 12))
-        fig.suptitle('TGW 批次處理品質分析儀表板', fontsize=16, fontweight='bold')
+        fig.suptitle("TGW 批次處理品質分析儀表板", fontsize=16, fontweight="bold")
 
         # 準備資料
         successful = results["successful_results"]
@@ -48,12 +49,18 @@ class VisualizationEngine:
         generation_times = [r["generation_time"] for r in successful]
 
         # 1. 品質分數分佈直方圖
-        axes[0, 0].hist(quality_scores, bins=20, color=self.color_palette['primary'], alpha=0.7)
-        axes[0, 0].axvline(np.mean(quality_scores), color=self.color_palette['danger'],
-                          linestyle='--', label=f'平均值: {np.mean(quality_scores):.3f}')
-        axes[0, 0].set_title('品質分數分佈')
-        axes[0, 0].set_xlabel('品質分數')
-        axes[0, 0].set_ylabel('頻率')
+        axes[0, 0].hist(
+            quality_scores, bins=20, color=self.color_palette["primary"], alpha=0.7
+        )
+        axes[0, 0].axvline(
+            np.mean(quality_scores),
+            color=self.color_palette["danger"],
+            linestyle="--",
+            label=f"平均值: {np.mean(quality_scores):.3f}",
+        )
+        axes[0, 0].set_title("品質分數分佈")
+        axes[0, 0].set_xlabel("品質分數")
+        axes[0, 0].set_ylabel("頻率")
         axes[0, 0].legend()
 
         # 2. 品質等級圓餅圖
@@ -63,127 +70,168 @@ class VisualizationEngine:
         if quality_dist:
             labels = list(quality_dist.keys())
             sizes = list(quality_dist.values())
-            colors = [self.color_palette['success'], self.color_palette['primary'],
-                     self.color_palette['warning'], self.color_palette['danger']]
+            colors = [
+                self.color_palette["success"],
+                self.color_palette["primary"],
+                self.color_palette["warning"],
+                self.color_palette["danger"],
+            ]
 
-            axes[0, 1].pie(sizes, labels=labels, colors=colors[:len(sizes)],
-                          autopct='%1.1f%%', startangle=90)
-            axes[0, 1].set_title('品質等級分佈')
+            axes[0, 1].pie(
+                sizes,
+                labels=labels,
+                colors=colors[: len(sizes)],
+                autopct="%1.1f%%",
+                startangle=90,
+            )
+            axes[0, 1].set_title("品質等級分佈")
 
         # 3. 生成時間散點圖
-        axes[0, 2].scatter(range(len(generation_times)), generation_times,
-                          c=quality_scores, cmap='viridis', alpha=0.6)
-        axes[0, 2].set_title('生成時間 vs 品質分數')
-        axes[0, 2].set_xlabel('任務序號')
-        axes[0, 2].set_ylabel('生成時間 (秒)')
+        axes[0, 2].scatter(
+            range(len(generation_times)),
+            generation_times,
+            c=quality_scores,
+            cmap="viridis",
+            alpha=0.6,
+        )
+        axes[0, 2].set_title("生成時間 vs 品質分數")
+        axes[0, 2].set_xlabel("任務序號")
+        axes[0, 2].set_ylabel("生成時間 (秒)")
         colorbar = plt.colorbar(axes[0, 2].collections[0], ax=axes[0, 2])
-        colorbar.set_label('品質分數')
+        colorbar.set_label("品質分數")
 
         # 4. 品質分數箱線圖
-        axes[1, 0].boxplot(quality_scores, patch_artist=True,
-                          boxprops=dict(facecolor=self.color_palette['info'], alpha=0.7))
-        axes[1, 0].set_title('品質分數分佈統計')
-        axes[1, 0].set_ylabel('品質分數')
+        axes[1, 0].boxplot(
+            quality_scores,
+            patch_artist=True,
+            boxprops=dict(facecolor=self.color_palette["info"], alpha=0.7),
+        )
+        axes[1, 0].set_title("品質分數分佈統計")
+        axes[1, 0].set_ylabel("品質分數")
 
         # 5. 時間效率分析
-        efficiency_scores = [q/max(t, 0.1) for q, t in zip(quality_scores, generation_times)]
-        axes[1, 1].bar(range(len(efficiency_scores)), sorted(efficiency_scores, reverse=True),
-                      color=self.color_palette['warning'])
-        axes[1, 1].set_title('效率分數排名 (品質/時間)')
-        axes[1, 1].set_xlabel('任務排名')
-        axes[1, 1].set_ylabel('效率分數')
+        efficiency_scores = [
+            q / max(t, 0.1) for q, t in zip(quality_scores, generation_times)
+        ]
+        axes[1, 1].bar(
+            range(len(efficiency_scores)),
+            sorted(efficiency_scores, reverse=True),
+            color=self.color_palette["warning"],
+        )
+        axes[1, 1].set_title("效率分數排名 (品質/時間)")
+        axes[1, 1].set_xlabel("任務排名")
+        axes[1, 1].set_ylabel("效率分數")
 
         # 6. 成功率和統計摘要
         stats_data = {
-            '總任務數': summary.get('total_tasks', 0),
-            '成功任務': summary.get('successful_count', 0),
-            '失敗任務': summary.get('failed_count', 0),
-            '成功率 (%)': summary.get('success_rate', 0),
-            '平均品質': summary.get('average_quality_score', 0),
-            '平均時間 (秒)': summary.get('average_generation_time', 0)
+            "總任務數": summary.get("total_tasks", 0),
+            "成功任務": summary.get("successful_count", 0),
+            "失敗任務": summary.get("failed_count", 0),
+            "成功率 (%)": summary.get("success_rate", 0),
+            "平均品質": summary.get("average_quality_score", 0),
+            "平均時間 (秒)": summary.get("average_generation_time", 0),
         }
 
         # 建立統計表格
-        axes[1, 2].axis('tight')
-        axes[1, 2].axis('off')
+        axes[1, 2].axis("tight")
+        axes[1, 2].axis("off")
 
-        table_data = [[key, f"{value:.3f}" if isinstance(value, float) and key != '成功率 (%)'
-                      else f"{value:.1f}%" if key == '成功率 (%)'
-                      else str(value)] for key, value in stats_data.items()]
+        table_data = [
+            [
+                key,
+                (
+                    f"{value:.3f}"
+                    if isinstance(value, float) and key != "成功率 (%)"
+                    else f"{value:.1f}%" if key == "成功率 (%)" else str(value)
+                ),
+            ]
+            for key, value in stats_data.items()
+        ]
 
-        table = axes[1, 2].table(cellText=table_data,
-                                colLabels=['指標', '數值'],
-                                cellLoc='center',
-                                loc='center')
+        table = axes[1, 2].table(
+            cellText=table_data,
+            colLabels=["指標", "數值"],
+            cellLoc="center",
+            loc="center",
+        )
         table.auto_set_font_size(False)
         table.set_fontsize(10)
         table.scale(1.2, 1.5)
-        axes[1, 2].set_title('處理統計摘要')
+        axes[1, 2].set_title("處理統計摘要")
 
         plt.tight_layout()
 
         if save_path:
-            plt.savefig(save_path, dpi=300, bbox_inches='tight', facecolor='white')
+            plt.savefig(save_path, dpi=300, bbox_inches="tight", facecolor="white")
             print(f"儀表板已儲存到: {save_path}")
 
         plt.show()
 
-    def create_comparison_chart(self, comparison_data: List[Dict[str, Any]],
-                               save_path: str = None):
+    def create_comparison_chart(
+        self, comparison_data: List[Dict[str, Any]], save_path: str = None
+    ):
         """建立比較圖表"""
 
         plt.style.use(self.style)
         fig, axes = plt.subplots(2, 2, figsize=self.figsize)
-        fig.suptitle('參數組合效果比較', fontsize=16, fontweight='bold')
+        fig.suptitle("參數組合效果比較", fontsize=16, fontweight="bold")
 
         # 準備資料
-        names = [item['name'] for item in comparison_data]
-        quality_scores = [item['avg_quality'] for item in comparison_data]
-        generation_times = [item['avg_time'] for item in comparison_data]
-        success_rates = [item['success_rate'] for item in comparison_data]
+        names = [item["name"] for item in comparison_data]
+        quality_scores = [item["avg_quality"] for item in comparison_data]
+        generation_times = [item["avg_time"] for item in comparison_data]
+        success_rates = [item["success_rate"] for item in comparison_data]
 
-        colors = [self.color_palette['primary'], self.color_palette['success'],
-                 self.color_palette['warning']][:len(names)]
+        colors = [
+            self.color_palette["primary"],
+            self.color_palette["success"],
+            self.color_palette["warning"],
+        ][: len(names)]
 
         # 1. 品質分數比較
         axes[0, 0].bar(names, quality_scores, color=colors)
-        axes[0, 0].set_title('平均品質分數比較')
-        axes[0, 0].set_ylabel('品質分數')
+        axes[0, 0].set_title("平均品質分數比較")
+        axes[0, 0].set_ylabel("品質分數")
         axes[0, 0].set_ylim(0, 1)
 
         # 2. 生成時間比較
         axes[0, 1].bar(names, generation_times, color=colors)
-        axes[0, 1].set_title('平均生成時間比較')
-        axes[0, 1].set_ylabel('時間 (秒)')
+        axes[0, 1].set_title("平均生成時間比較")
+        axes[0, 1].set_ylabel("時間 (秒)")
 
         # 3. 成功率比較
         axes[1, 0].bar(names, success_rates, color=colors)
-        axes[1, 0].set_title('成功率比較')
-        axes[1, 0].set_ylabel('成功率 (%)')
+        axes[1, 0].set_title("成功率比較")
+        axes[1, 0].set_ylabel("成功率 (%)")
         axes[1, 0].set_ylim(0, 100)
 
         # 4. 綜合效率分數
-        efficiency_scores = [q * s / max(t, 0.1) for q, s, t in
-                           zip(quality_scores, [sr/100 for sr in success_rates], generation_times)]
+        efficiency_scores = [
+            q * s / max(t, 0.1)
+            for q, s, t in zip(
+                quality_scores, [sr / 100 for sr in success_rates], generation_times
+            )
+        ]
 
         axes[1, 1].bar(names, efficiency_scores, color=colors)
-        axes[1, 1].set_title('綜合效率分數')
-        axes[1, 1].set_ylabel('效率分數')
+        axes[1, 1].set_title("綜合效率分數")
+        axes[1, 1].set_ylabel("效率分數")
 
         # 調整 x 軸標籤角度
         for ax in axes.flat:
-            ax.tick_params(axis='x', rotation=45)
+            ax.tick_params(axis="x", rotation=45)
 
         plt.tight_layout()
 
         if save_path:
-            plt.savefig(save_path, dpi=300, bbox_inches='tight', facecolor='white')
+            plt.savefig(save_path, dpi=300, bbox_inches="tight", facecolor="white")
             print(f"比較圖表已儲存到: {save_path}")
 
         plt.show()
 
-    def generate_trend_analysis(self, historical_data: List[Dict[str, Any]],
-                               save_path: str = None):
+    def generate_trend_analysis(
+        self, historical_data: List[Dict[str, Any]], save_path: str = None
+    ):
         """生成趨勢分析圖"""
 
         if len(historical_data) < 2:
@@ -192,34 +240,53 @@ class VisualizationEngine:
 
         plt.style.use(self.style)
         fig, axes = plt.subplots(2, 2, figsize=self.figsize)
-        fig.suptitle('歷史趨勢分析', fontsize=16, fontweight='bold')
+        fig.suptitle("歷史趨勢分析", fontsize=16, fontweight="bold")
 
         # 準備時間軸資料
-        timestamps = [item['timestamp'] for item in historical_data]
-        quality_trends = [item['summary']['average_quality_score'] for item in historical_data]
-        time_trends = [item['summary']['average_generation_time'] for item in historical_data]
-        success_trends = [item['summary']['success_rate'] for item in historical_data]
+        timestamps = [item["timestamp"] for item in historical_data]
+        quality_trends = [
+            item["summary"]["average_quality_score"] for item in historical_data
+        ]
+        time_trends = [
+            item["summary"]["average_generation_time"] for item in historical_data
+        ]
+        success_trends = [item["summary"]["success_rate"] for item in historical_data]
 
         # 1. 品質分數趨勢
-        axes[0, 0].plot(timestamps, quality_trends, marker='o',
-                       color=self.color_palette['primary'], linewidth=2)
-        axes[0, 0].set_title('品質分數趨勢')
-        axes[0, 0].set_ylabel('平均品質分數')
-        axes[0, 0].tick_params(axis='x', rotation=45)
+        axes[0, 0].plot(
+            timestamps,
+            quality_trends,
+            marker="o",
+            color=self.color_palette["primary"],
+            linewidth=2,
+        )
+        axes[0, 0].set_title("品質分數趨勢")
+        axes[0, 0].set_ylabel("平均品質分數")
+        axes[0, 0].tick_params(axis="x", rotation=45)
 
         # 2. 生成時間趨勢
-        axes[0, 1].plot(timestamps, time_trends, marker='s',
-                       color=self.color_palette['warning'], linewidth=2)
-        axes[0, 1].set_title('生成時間趨勢')
-        axes[0, 1].set_ylabel('平均生成時間 (秒)')
-        axes[0, 1].tick_params(axis='x', rotation=45)
+        axes[0, 1].plot(
+            timestamps,
+            time_trends,
+            marker="s",
+            color=self.color_palette["warning"],
+            linewidth=2,
+        )
+        axes[0, 1].set_title("生成時間趨勢")
+        axes[0, 1].set_ylabel("平均生成時間 (秒)")
+        axes[0, 1].tick_params(axis="x", rotation=45)
 
         # 3. 成功率趨勢
-        axes[1, 0].plot(timestamps, success_trends, marker='^',
-                       color=self.color_palette['success'], linewidth=2)
-        axes[1, 0].set_title('成功率趨勢')
-        axes[1, 0].set_ylabel('成功率 (%)')
-        axes[1, 0].tick_params(axis='x', rotation=45)
+        axes[1, 0].plot(
+            timestamps,
+            success_trends,
+            marker="^",
+            color=self.color_palette["success"],
+            linewidth=2,
+        )
+        axes[1, 0].set_title("成功率趨勢")
+        axes[1, 0].set_ylabel("成功率 (%)")
+        axes[1, 0].tick_params(axis="x", rotation=45)
 
         # 4. 綜合改進指標
         baseline_quality = quality_trends[0]
@@ -232,20 +299,30 @@ class VisualizationEngine:
             time_improvement = (baseline_time - t) / max(baseline_time, 0.1)
             improvement_scores.append(quality_improvement + time_improvement)
 
-        axes[1, 1].bar(range(len(improvement_scores)), improvement_scores,
-                      color=[self.color_palette['success'] if score >= 0 else self.color_palette['danger']
-                            for score in improvement_scores])
-        axes[1, 1].set_title('相對改進指標')
-        axes[1, 1].set_ylabel('改進分數')
-        axes[1, 1].set_xlabel('測試輪次')
+        axes[1, 1].bar(
+            range(len(improvement_scores)),
+            improvement_scores,
+            color=[
+                (
+                    self.color_palette["success"]
+                    if score >= 0
+                    else self.color_palette["danger"]
+                )
+                for score in improvement_scores
+            ],
+        )
+        axes[1, 1].set_title("相對改進指標")
+        axes[1, 1].set_ylabel("改進分數")
+        axes[1, 1].set_xlabel("測試輪次")
 
         plt.tight_layout()
 
         if save_path:
-            plt.savefig(save_path, dpi=300, bbox_inches='tight', facecolor='white')
+            plt.savefig(save_path, dpi=300, bbox_inches="tight", facecolor="white")
             print(f"趨勢分析圖已儲存到: {save_path}")
 
         plt.show()
+
 
 class ReportGenerator:
     """報告生成器"""
@@ -294,12 +371,12 @@ class ReportGenerator:
         report += f"""
 ## 💡 關鍵洞察與建議
 
-### 表現亮點
+### 表現亮點部分
 """
 
-        success_rate = summary.get('success_rate', 0)
-        avg_quality = summary.get('average_quality_score', 0)
-        avg_time = summary.get('average_generation_time', 0)
+        success_rate = summary.get("success_rate", 0)
+        avg_quality = summary.get("average_quality_score", 0)
+        avg_time = summary.get("average_generation_time", 0)
 
         if success_rate >= 95:
             report += "- 🎉 成功率優秀，系統穩定性佳\n"
@@ -357,10 +434,11 @@ class ReportGenerator:
         output_file = Path(output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(output_file, 'w', encoding='utf-8') as f:
+        with open(output_file, "w", encoding="utf-8") as f:
             f.write(report_content)
 
         print(f"執行摘要報告已儲存到: {output_file}")
+
 
 # 使用範例
 if __name__ == "__main__":
@@ -369,7 +447,7 @@ if __name__ == "__main__":
         "successful_results": [
             {"quality_score": 0.85, "generation_time": 3.2},
             {"quality_score": 0.72, "generation_time": 4.1},
-            {"quality_score": 0.91, "generation_time": 2.8}
+            {"quality_score": 0.91, "generation_time": 2.8},
         ],
         "failed_results": [],
         "summary": {
@@ -382,10 +460,10 @@ if __name__ == "__main__":
                 "excellent": 2,
                 "good": 1,
                 "acceptable": 0,
-                "poor": 0
-            }
+                "poor": 0,
+            },
         },
-        "timestamp": "2024-01-15 10:30:00"
+        "timestamp": "2024-01-15 10:30:00",
     }
 
     # 測試視覺化
