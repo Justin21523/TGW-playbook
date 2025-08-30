@@ -1,0 +1,89 @@
+# Stage 3 Advanced Configuration
+# 進階配置管理檔案
+
+# API 設定
+api:
+  base_url: "http://localhost:5000"
+  timeout: 30
+  retry_attempts: 3
+  health_check_interval: 300
+
+# 批次處理設定
+batch_processing:
+  max_concurrent: 3
+  max_retries: 2
+  quality_threshold: 0.6
+  default_parameters:
+    temperature: 0.7
+    top_p: 0.9
+    max_new_tokens: 512
+    repetition_penalty: 1.1
+
+# 品質評估設定
+quality_assessment:
+  weights:
+    length_score: 0.3
+    completeness_score: 0.3
+    relevance_score: 0.4
+
+  thresholds:
+    excellent: 0.8
+    good: 0.6
+    acceptable: 0.4
+    poor: 0.0
+
+# Token 分析設定
+token_analysis:
+  efficiency_targets:
+    excellent: 3.0
+    good: 2.5
+    acceptable: 2.0
+
+  language_coefficients:
+    chinese: 1.5
+    english: 1.3
+    mixed: 1.4
+
+# 視覺化設定
+visualization:
+  style: "seaborn-v0_8"
+  figsize: [15, 10]
+  color_palette:
+    primary: "#3498db"
+    success: "#2ecc71"
+    warning: "#f39c12"
+    danger: "#e74c3c"
+    info: "#9b59b6"
+    secondary: "#95a5a6"
+
+  save_format: "png"
+  dpi: 300
+
+# 日誌設定
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_path: "logs/stage3.log"
+  max_file_size: "10MB"
+  backup_count: 5
+
+# 結果儲存設定
+results:
+  base_directory: "results"
+  auto_save: true
+  compression: false
+  retention_days: 30
+  formats: ["json", "csv"]
+
+# 實驗設定
+experiments:
+  default_iterations: 3
+  confidence_level: 0.95
+  statistical_tests: ["t-test", "wilcoxon"]
+
+# 進階功能開關
+features:
+  enable_advanced_analytics: true
+  enable_ml_quality_scoring: false
+  enable_auto_parameter_tuning: false
+  enable_distributed_processing: false

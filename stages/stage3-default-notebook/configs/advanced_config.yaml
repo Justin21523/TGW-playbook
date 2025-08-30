@@ -1,0 +1,287 @@
+# TGW Stage 3 進階客製化配置檔案
+# 位置: tgw-playbook/stages/stage3-default-notebook/configs/advanced_config.yaml
+
+# ============================================================================
+# 提示詞工程配置
+# ============================================================================
+prompt_engineering:
+  # 預設提示詞模板類別
+  categories:
+    - technical: "技術文檔和 API 說明"
+    - creative: "創意寫作和故事創作"
+    - business: "商業分析和報告"
+    - educational: "教學材料和指南"
+    - code: "程式碼生成和審查"
+
+  # 提示詞品質指標
+  quality_metrics:
+    min_clarity_score: 0.7
+    min_specificity_score: 0.6
+    max_token_count: 1000
+    preferred_token_efficiency: 2.5 # chars per token
+
+  # A/B 測試設定
+  ab_testing:
+    default_iterations: 3
+    max_concurrent_tests: 5
+    quality_threshold: 0.6
+    confidence_level: 0.95
+
+# ============================================================================
+# Token 分析配置
+# ============================================================================
+token_analysis:
+  # 效率分析設定
+  efficiency:
+    excellent_ratio: 3.0 # 每個 token 3 個字符以上為優秀
+    good_ratio: 2.5 # 每個 token 2.5 個字符為良好
+    acceptable_ratio: 2.0 # 每個 token 2 個字符為可接受
+
+  # 成本估算設定
+  cost_calculation:
+    input_token_cost: 0.0001 # 輸入 token 單價
+    output_token_cost: 0.0002 # 輸出 token 單價
+    currency: "USD"
+
+  # 語言特定設定
+  language_specific:
+    chinese:
+      expected_chars_per_token: 1.8
+      complexity_weight: 1.2
+    english:
+      expected_chars_per_token: 4.2
+      complexity_weight: 1.0
+    mixed:
+      expected_chars_per_token: 2.5
+      complexity_weight: 1.1
+
+# ============================================================================
+# 批次生成配置
+# ============================================================================
+batch_generation:
+  # 並行處理設定
+  concurrency:
+    max_concurrent_requests: 3
+    request_delay_seconds: 1
+    timeout_seconds: 60
+    retry_attempts: 2
+
+  # 品質控制設定
+  quality_control:
+    enable_quality_filtering: true
+    min_quality_score: 0.6
+    auto_retry_low_quality: true
+    save_all_results: true
+
+  # 輸出格式設定
+  output_format:
+    include_metadata: true
+    include_parameters: true
+    include_timing: true
+    compress_large_results: false
+
+  # 預設參數組合
+  parameter_presets:
+    conservative:
+      temperature: 0.3
+      top_p: 0.8
+      top_k: 30
+      repetition_penalty: 1.05
+      max_new_tokens: 400
+
+    balanced:
+      temperature: 0.7
+      top_p: 0.9
+      top_k: 40
+      repetition_penalty: 1.1
+      max_new_tokens: 512
+
+    creative:
+      temperature: 0.9
+      top_p: 0.95
+      top_k: 50
+      repetition_penalty: 1.15
+      max_new_tokens: 600
+
+# ============================================================================
+# 品質評估配置
+# ============================================================================
+quality_assessment:
+  # 評估指標權重
+  metrics:
+    readability_weight: 0.25
+    coherence_weight: 0.25
+    completeness_weight: 0.25
+    relevance_weight: 0.25
+
+  # 可讀性評估
+  readability:
+    optimal_sentence_length: 15
+    max_sentence_length: 30
+    punctuation_density_range: [0.05, 0.15]
+
+  # 連貫性評估
+  coherence:
+    connector_words:
+      - "因此"
+      - "所以"
+      - "但是"
+      - "然而"
+      - "此外"
+      - "另外"
+      - "首先"
+      - "其次"
+      - "最後"
+      - "總之"
+    min_connector_density: 0.1
+
+  # 完整性評估
+  completeness:
+    min_length_ratio: 2.0 # 相對於提示詞的最小長度比
+    required_conclusion_phrases:
+      - "總結"
+      - "結論"
+      - "綜上"
+      - "最後"
+      - "。"
+      - "！"
+
+# ============================================================================
+# 自動化工作流配置
+# ============================================================================
+automation:
+  # 定時任務設定
+  scheduled_tasks:
+    daily_quality_report:
+      enabled: false
+      time: "09:00"
+      include_trends: true
+
+    weekly_token_analysis:
+      enabled: false
+      day: "monday"
+      time: "08:00"
+      analyze_all_templates: true
+
+  # 通知設定
+  notifications:
+    enable_email: false
+    enable_webhook: false
+    quality_threshold_alert: 0.5
+    error_rate_threshold: 0.1
+
+  # 備份設定
+  backup:
+    auto_backup: true
+    backup_frequency: "daily"
+    retention_days: 30
+    backup_location: "./backups"
+
+# ============================================================================
+# 整合設定
+# ============================================================================
+integration:
+  # TGW API 設定
+  tgw_api:
+    base_url: "http://localhost:5000"
+    timeout: 30
+    retry_attempts: 3
+    health_check_interval: 300
+
+  # 外部工具整合
+  external_tools:
+    enable_matplotlib: true
+    enable_pandas: true
+    enable_jupyter_export: false
+
+  # 資料匯出設定
+  export:
+    formats: ["json", "csv", "markdown"]
+    include_raw_data: true
+    include_analysis: true
+    compress_exports: true
+
+# ============================================================================
+# 偵錯和日誌設定
+# ============================================================================
+debugging:
+  # 日誌等級
+  log_level: "INFO" # DEBUG, INFO, WARNING, ERROR
+
+  # 日誌輸出
+  log_to_console: true
+  log_to_file: true
+  log_file_path: "./logs/stage3.log"
+
+  # 效能監控
+  performance_monitoring:
+    track_response_times: true
+    track_token_usage: true
+    track_error_rates: true
+    generate_performance_reports: true
+
+  # 詳細偵錯選項
+  verbose_options:
+    show_api_requests: false
+    show_token_details: false
+    show_quality_calculations: false
+    save_intermediate_results: false
+
+# ============================================================================
+# 進階功能開關
+# ============================================================================
+experimental_features:
+  # 實驗性功能（可能不穩定）
+  enable_async_processing: false
+  enable_cache_optimization: false
+  enable_ml_quality_scoring: false
+  enable_auto_parameter_tuning: false
+
+  # 進階分析功能
+  advanced_analytics:
+    sentiment_analysis: false
+    topic_modeling: false
+    style_consistency_check: false
+    plagiarism_detection: false
+
+# ============================================================================
+# 使用者介面配置
+# ============================================================================
+ui_preferences:
+  # 顯示偏好
+  default_view_mode: "detailed" # simple, detailed, advanced
+  show_progress_bars: true
+  show_real_time_updates: true
+  max_results_per_page: 20
+
+  # 顏色主題
+  theme:
+    primary_color: "#2563eb"
+    success_color: "#10b981"
+    warning_color: "#f59e0b"
+    error_color: "#ef4444"
+
+  # 快捷鍵設定
+  keyboard_shortcuts:
+    quick_analyze: "Ctrl+A"
+    batch_generate: "Ctrl+B"
+    save_template: "Ctrl+S"
+    export_results: "Ctrl+E"
+
+# ============================================================================
+# 自訂擴展配置
+# ============================================================================
+custom_extensions:
+  # 自訂評估函數
+  custom_quality_functions: []
+
+  # 自訂提示詞轉換器
+  custom_prompt_transformers: []
+
+  # 自訂輸出格式器
+  custom_output_formatters: []
+
+  # 插件載入路徑
+  plugin_paths:
+    - "./plugins"
+    - "./custom_modules"

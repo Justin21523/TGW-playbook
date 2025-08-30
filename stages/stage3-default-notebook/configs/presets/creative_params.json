@@ -1,0 +1,8 @@
+{
+    "temperature": 0.9,
+    "top_p": 0.95,
+    "top_k": 50,
+    "repetition_penalty": 1.15,
+    "max_new_tokens": 600,
+    "description": "創意參數設定，適合創意寫作、腦力激盪等需要創新的場景"
+}

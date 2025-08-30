@@ -1,0 +1,20 @@
+請使用{PROGRAMMING_LANGUAGE}撰寫程式碼：
+
+需求描述：{REQUIREMENT_DESCRIPTION}
+輸入參數：{INPUT_PARAMETERS}
+預期輸出：{EXPECTED_OUTPUT}
+特殊限制：{CONSTRAINTS}
+
+程式碼要求：
+1. 完整可執行的程式碼
+2. 清楚的變數命名和程式碼結構
+3. 詳細的註解說明
+4. 適當的錯誤處理機制
+5. 效能最佳化考量
+6. 符合{PROGRAMMING_LANGUAGE}最佳實務
+
+請提供：
+- 主要程式碼實作
+- 使用範例
+- 測試案例
+- 可能的改進方向

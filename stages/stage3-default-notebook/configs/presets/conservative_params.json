@@ -1,0 +1,8 @@
+{
+    "temperature": 0.3,
+    "top_p": 0.8,
+    "top_k": 30,
+    "repetition_penalty": 1.05,
+    "max_new_tokens": 400,
+    "description": "保守參數設定，適合技術文檔、正式報告等需要準確性的場景"
+}
